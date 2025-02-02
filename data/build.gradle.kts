@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
 }
 
 apply(from = "../shared-dependencies.gradle")
@@ -35,7 +36,11 @@ android {
 }
 
 dependencies {
+
     api(libs.datastore.preferences)
+    implementation(libs.androidx.room)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

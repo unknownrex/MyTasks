@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+
     api(libs.androidx.core.ktx)
     api(libs.koin.androidx.compose)
     api(libs.androidx.lifecycle.runtime.ktx)
