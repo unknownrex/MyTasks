@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.devtoolsKSP)
+    alias(libs.plugins.compose.compiler)
 }
 
 apply(from = "../shared-dependencies.gradle")
@@ -10,7 +12,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 34
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -32,9 +34,16 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
 }
 
 dependencies {
+    implementation(project(":data"))
 
     api(libs.androidx.core.ktx)
     api(libs.koin.androidx.compose)
@@ -45,11 +54,9 @@ dependencies {
     api(libs.androidx.ui.graphics)
     api(libs.androidx.ui.tooling.preview)
     api(libs.androidx.material3)
-    api(libs.androidx.core.ktx)
-    api(libs.androidx.appcompat)
-    api(libs.material)
+    api(libs.androidx.navigation.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    debugImplementation(libs.ui.tooling)
 }
