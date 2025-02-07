@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyTasks</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="password_confirmation">Konfirmasi Password</string>
+    <string name="confirm_password">Konfirmasi Password</string>
+    <string name="show_password">Show Password</string>
+    <string name="email_password_not_valid">Email atau password tidak valid</string>
+    <string name="dont_have_account">Belum punya akun?</string>
+    <string name="already_have_account">Sudah punya akun?</string>
+    <string name="email_or_password_wrong">Email atau password salah</string>
+</resources>
