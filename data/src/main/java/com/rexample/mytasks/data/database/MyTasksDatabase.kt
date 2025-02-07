@@ -16,21 +16,4 @@ abstract class MyTasksDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun categoryDao(): CategoryDao
     abstract fun taskDao(): TaskDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: MyTasksDatabase? = null
-
-        fun getDatabase(context: Context): MyTasksDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    MyTasksDatabase::class.java,
-                    "mytasks_database"
-                ).build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
 }
