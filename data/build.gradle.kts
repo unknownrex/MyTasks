@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.devtoolsKSP)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 apply(from = "../shared-dependencies.gradle")
@@ -38,6 +39,7 @@ android {
 dependencies {
 
     api(libs.datastore.preferences)
+    api(libs.kotlinx.serialization.json)
     implementation(libs.androidx.room)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
