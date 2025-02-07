@@ -2,21 +2,48 @@ package com.rexample.mytasks.data.repository
 
 import com.rexample.mytasks.data.dao.CategoryDao
 import com.rexample.mytasks.data.entity.CategoryEntity
+import com.rexample.mytasks.data.mechanism.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class CategoryRepository(private val categoryDao: CategoryDao) : ICategoryRepository {
-    override suspend fun insertCategory(category: CategoryEntity) {
-        categoryDao.insertCategory(category)
+    override fun insertCategory(category: CategoryEntity): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+            categoryDao.insertCategory(category)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error("Gagal menambahkan kategori: ${e.message}"))
+        }
     }
 
-    override suspend fun updateCategory(category: CategoryEntity) {
-        categoryDao.updateCategory(category)
+    override fun updateCategory(category: CategoryEntity): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+            categoryDao.updateCategory(category)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error("Gagal memperbarui kategori: ${e.message}"))
+        }
     }
 
-    override suspend fun deleteCategory(category: CategoryEntity) {
-        categoryDao.deleteCategory(category)
+    override fun deleteCategory(category: CategoryEntity): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+            categoryDao.deleteCategory(category)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error("Gagal menghapus kategori: ${e.message}"))
+        }
     }
 
-    override suspend fun getAllCategories(userId: Int): List<CategoryEntity> {
-        return categoryDao.getAllCategories(userId)
+    override fun getAllCategories(userId: Int): Flow<Resource<List<CategoryEntity>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val result = categoryDao.getAllCategories(userId)
+            emit(Resource.Success(result))
+        } catch (e: Exception) {
+            emit(Resource.Error("Gagal mengambil kategori: ${e.message}"))
+        }
     }
 }
