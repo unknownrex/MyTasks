@@ -19,6 +19,9 @@ interface TaskDao {
     @Delete
     suspend fun deleteTask(task: TaskEntity)
 
+    @Query("DELETE FROM tasks WHERE id IN (:taskIds) AND user_id = :userId")
+    suspend fun deleteTasks(taskIds: List<Int>, userId: Int)
+
     @Query("SELECT * FROM tasks WHERE user_id = :userId ORDER BY is_pinned DESC, date ASC, time ASC")
     suspend fun getAllTasks(userId: Int): List<TaskEntity>
 
@@ -29,5 +32,12 @@ interface TaskDao {
     suspend fun filterTasksByCategory(userId: Int, categoryId: Int): List<TaskEntity>
 
     @Query("UPDATE tasks SET is_pinned = :isPinned WHERE id = :taskId AND user_id = :userId")
-    suspend fun pinTask(taskId: Int, userId: Int, isPinned: Boolean)
+    suspend fun pinTask(userId: Int, taskId: Int, isPinned: Boolean)
+
+    @Query("UPDATE tasks SET is_done = :isDone WHERE id = :taskId AND user_id = :userId")
+    suspend fun markAsDone(taskId: Int, userId: Int, isDone: Boolean)
+
+    @Query("UPDATE tasks SET is_done = 1 WHERE id IN (:taskIds) AND user_id = :userId")
+    suspend fun multipleMarkAsDone(userId: Int, taskIds: List<Int>)
+
 }

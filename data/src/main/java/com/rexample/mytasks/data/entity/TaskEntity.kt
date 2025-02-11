@@ -29,8 +29,8 @@ data class TaskEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "date") val date: String?,
     @ColumnInfo(name = "time") val time: String?,
-    @ColumnInfo(name = "status") val status: String = "pending",
-    @ColumnInfo(name = "is_pinned") val isPinned: Boolean = false,
+    @ColumnInfo(name = "is_done") val isDone: Boolean = false,
+    @ColumnInfo(name = "is_pinned") var isPinned: Boolean = false,
     @ColumnInfo(name = "category_id") val categoryId: Int?,
     @ColumnInfo(name = "user_id") val userId: Int
 )

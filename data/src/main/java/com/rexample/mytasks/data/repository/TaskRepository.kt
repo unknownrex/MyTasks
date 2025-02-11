@@ -39,6 +39,16 @@ class TaskRepository(private val taskDao: TaskDao) : ITaskRepository {
         }
     }
 
+    override fun deleteTasks(taskIds: List<Int>, userId: Int): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+            taskDao.deleteTasks(taskIds, userId)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error("Gagal menghapus tugas: ${e.message}"))
+        }
+    }
+
     override fun getAllTasks(userId: Int): Flow<Resource<List<TaskEntity>>> = flow {
         try {
             emit(Resource.Loading())
@@ -69,7 +79,7 @@ class TaskRepository(private val taskDao: TaskDao) : ITaskRepository {
         }
     }
 
-    override fun pinTask(taskId: Int, userId: Int, isPinned: Boolean): Flow<Resource<Unit>> = flow {
+    override fun pinTask(userId: Int, taskId: Int, isPinned: Boolean): Flow<Resource<Unit>> = flow {
         try {
             emit(Resource.Loading())
             taskDao.pinTask(taskId, userId, isPinned)
@@ -78,5 +88,26 @@ class TaskRepository(private val taskDao: TaskDao) : ITaskRepository {
             emit(Resource.Error("Gagal menyematkan tugas: ${e.message}"))
         }
     }
+
+    override fun markAsDone(userId: Int, taskId: Int, isDone: Boolean): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+            taskDao.pinTask(userId, taskId, isDone)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error("Gagal menyematkan tugas: ${e.message}"))
+        }
+    }
+
+    override fun multipleMarkAsDone(userId: Int, taskIds: List<Int>): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+            taskDao.multipleMarkAsDone(userId, taskIds)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error("Gagal menandai tugas sebagai selesai"))
+        }
+    }
+
 }
 
