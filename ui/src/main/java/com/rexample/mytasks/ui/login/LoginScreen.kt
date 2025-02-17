@@ -26,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,12 +51,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
-    navigate: (dataUser: UserEntity?) -> Unit,
+    navigate: () -> Unit,
     navigateRegister: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RegisterViewModel = koinViewModel()
 ) {
-    val state = viewModel.state.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -105,11 +105,18 @@ fun LoginScreen(
 @Composable
 fun LoginForm(
     viewModel: LoginViewModel = koinViewModel(),
-    navigate: (dataUser: UserEntity?) -> Unit
+    navigate: () -> Unit
 ) {
     val state = viewModel.state.collectAsState()
     val action = { action: LoginUiAction -> viewModel.doAction(action) }
     val context = LocalContext.current
+
+    LaunchedEffect(state.value.loginResult) {
+        if(state.value.loginResult is Resource.Success) {
+            Toast.makeText(context, "Login Berhasil", Toast.LENGTH_SHORT).show()
+            navigate()
+        }
+    }
 
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -214,13 +221,12 @@ fun LoginForm(
                     text = stringResource(id = R.string.login),
                     modifier = Modifier.fillMaxWidth(),
                     enabled = state.value.emailInput != "" &&
-                            state.value.passwordInput != "",
+                            state.value.passwordInput != "" &&
+                            state.value.emailInputStatus is Resource.Success &&
+                            state.value.passwordInputStatus is Resource.Success
+                    ,
                     onClick = {
                         action(LoginUiAction.LoginUser)
-                        if(state.value.loginResult is Resource.Success) {
-                            Toast.makeText(context, "Login Berhasil", Toast.LENGTH_SHORT).show()
-                            navigate(state.value.loginResult.data)
-                        }
                     }
                 )
             }
