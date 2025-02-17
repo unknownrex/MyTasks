@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.rexample.mytasks.data.entity.TaskEntity
+import com.rexample.mytasks.data.entity.UserEntity
 
 @Dao
 interface TaskDao {
@@ -35,9 +36,12 @@ interface TaskDao {
     suspend fun pinTask(userId: Int, taskId: Int, isPinned: Boolean)
 
     @Query("UPDATE tasks SET is_done = :isDone WHERE id = :taskId AND user_id = :userId")
-    suspend fun markAsDone(taskId: Int, userId: Int, isDone: Boolean)
+    suspend fun markAsDone(userId: Int, taskId: Int, isDone: Boolean)
 
     @Query("UPDATE tasks SET is_done = 1 WHERE id IN (:taskIds) AND user_id = :userId")
     suspend fun multipleMarkAsDone(userId: Int, taskIds: List<Int>)
+
+    @Query("SELECT * FROM TASKS WHERE id = :taskId LIMIT 1")
+    suspend fun getTaskById(taskId: Int): TaskEntity?
 
 }
