@@ -70,7 +70,7 @@ class EditTaskViewModel(
                 name = state.value.taskNameInput,
                 date = state.value.taskDateInput,
                 time = state.value.taskTimeInput,
-                categoryId = state.value.taskCategoryInput.toInt()
+                categoryId = state.value.taskCategoryInput.toIntOrNull()
             )
             if (newTaskEdit != null) {
                 taskRepository.updateTask(

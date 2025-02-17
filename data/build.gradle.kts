@@ -40,6 +40,7 @@ dependencies {
 
     api(libs.datastore.preferences)
     api(libs.kotlinx.serialization.json)
+    api(libs.androidx.work.runtime)
     implementation(libs.androidx.room)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)

@@ -48,5 +48,5 @@ val dataModule = module {
 
     single<IUserRepository> { UserRepository(get(), get()) }
     single<ICategoryRepository> { CategoryRepository(get()) }
-    single<ITaskRepository> { TaskRepository(get()) }
+    single<ITaskRepository> { TaskRepository(get(), get()) }
 }

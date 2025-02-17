@@ -1,14 +1,64 @@
 package com.rexample.mytasks.data.repository
 
+import android.content.Context
+import android.util.Log
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.rexample.mytasks.data.dao.TaskDao
 import com.rexample.mytasks.data.dao.UserDao
 import com.rexample.mytasks.data.entity.TaskEntity
 import com.rexample.mytasks.data.entity.UserEntity
 import com.rexample.mytasks.data.mechanism.Resource
+import com.rexample.mytasks.data.workmanager.TaskReminderWorker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
 
-class TaskRepository(private val taskDao: TaskDao) : ITaskRepository {
+class TaskRepository(
+    private val taskDao: TaskDao,
+    private val context: Context
+) : ITaskRepository {
+
+    override fun scheduleTaskReminder(task: TaskEntity) {
+        val dateFormatter = DateTimeFormatter.ofPattern("dd - MM - yyyy")
+        val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+        val taskDate = LocalDate.parse(task.date, dateFormatter)
+        val taskTime = LocalTime.parse(task.time, timeFormatter)
+        val taskDateTime = LocalDateTime.of(taskDate, taskTime).minusMinutes(2)
+
+        val delay = Duration.between(LocalDateTime.now(), taskDateTime).toMillis()
+
+        if (delay > 0) {
+            Log.e("TaskReminder", "Waktu tugas telah berlalu, tidak menjadwalkan pengingat")
+            val workRequest = OneTimeWorkRequestBuilder<TaskReminderWorker>()
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .setInputData(
+                    workDataOf(
+                        "TASK_NAME" to task.name,
+                        "TASK_ID" to task.id,
+                        "USER_ID" to (task.userId ?: 0)
+                    )
+                )
+                .build()
+
+            WorkManager
+                .getInstance(context)
+                .enqueueUniqueWork(
+                "TaskReminder_${task.id}",
+                ExistingWorkPolicy.REPLACE,
+                workRequest)
+
+        }
+    }
+
 
     override fun insertTask(task: TaskEntity): Flow<Resource<Unit>> = flow {
         if (task.userId == null) {
@@ -18,16 +68,25 @@ class TaskRepository(private val taskDao: TaskDao) : ITaskRepository {
         try {
             emit(Resource.Loading())
             taskDao.insertTask(task)
+
+            scheduleTaskReminder(task)
+
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
             emit(Resource.Error("Gagal menambahkan tugas: ${e.message}"))
         }
     }
 
+
     override fun updateTask(task: TaskEntity): Flow<Resource<Unit>> = flow {
         try {
             emit(Resource.Loading())
             taskDao.updateTask(task)
+
+            WorkManager.getInstance(context).cancelUniqueWork("TaskReminder_${task.id}")
+
+            scheduleTaskReminder(task)
+
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
             emit(Resource.Error("Gagal memperbarui tugas: ${e.message}"))
