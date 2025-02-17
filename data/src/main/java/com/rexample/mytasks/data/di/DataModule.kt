@@ -12,8 +12,10 @@ import com.rexample.mytasks.data.database.MyTasksDatabase
 import com.rexample.mytasks.data.preference.AuthPreference
 import com.rexample.mytasks.data.repository.CategoryRepository
 import com.rexample.mytasks.data.repository.ICategoryRepository
+import com.rexample.mytasks.data.repository.ITaskReminderRepository
 import com.rexample.mytasks.data.repository.ITaskRepository
 import com.rexample.mytasks.data.repository.IUserRepository
+import com.rexample.mytasks.data.repository.TaskReminderRepository
 import com.rexample.mytasks.data.repository.TaskRepository
 import com.rexample.mytasks.data.repository.UserRepository
 import org.koin.android.ext.koin.androidContext
@@ -49,4 +51,5 @@ val dataModule = module {
     single<IUserRepository> { UserRepository(get(), get()) }
     single<ICategoryRepository> { CategoryRepository(get()) }
     single<ITaskRepository> { TaskRepository(get(), get()) }
+    single<ITaskReminderRepository> { TaskReminderRepository(get()) }
 }

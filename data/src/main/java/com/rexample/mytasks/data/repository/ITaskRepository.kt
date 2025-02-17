@@ -17,5 +17,4 @@ interface ITaskRepository {
     fun markAsDone(userId: Int?, taskId: Int, isDone: Boolean): Flow<Resource<Unit>>
     fun multipleMarkAsDone(userId: Int?, taskId: List<Int>): Flow<Resource<Unit>>
     fun getTaskById(taskId: Int): Flow<Resource<TaskEntity>>
-    fun scheduleTaskReminder(task: TaskEntity)
 }
