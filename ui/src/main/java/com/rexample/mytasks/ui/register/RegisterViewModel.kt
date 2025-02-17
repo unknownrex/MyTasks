@@ -6,6 +6,7 @@ import com.rexample.mytasks.data.repository.IUserRepository
 import com.rexample.mytasks.ui.core.BaseViewModel
 import com.rexample.mytasks.data.mechanism.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -31,6 +32,21 @@ class RegisterViewModel(private val userRepository: IUserRepository) : BaseViewM
             is RegisterUiAction.ShowConfirmPassword -> {
                 _state.update { state -> state.copy(confirmPasswordHidden = false) }
             }
+
+            is RegisterUiAction.UpdateUsername -> setUsernameInput(action.username)
+        }
+    }
+
+    private fun setUsernameInput(newUsernameInput: String) {
+        _state.update {
+            it.copy(
+                usernameInput = newUsernameInput,
+                usernameInputStatus = Resource.Success("")
+            )
+        }
+
+        if (state.value.usernameInput.length < 3) {
+            _state.update { it.copy(usernameInputStatus = Resource.Error("Nama minimal 3 karakter")) }
         }
     }
 
@@ -42,7 +58,7 @@ class RegisterViewModel(private val userRepository: IUserRepository) : BaseViewM
             )
         }
 
-        if (!isValidEmail(state.value.emailInput)) {
+        if (!isValidEmail(state.value.emailInput) ) {
             _state.update { it.copy(emailInputStatus = Resource.Error("Email tidak valid")) }
             return
         }
@@ -87,16 +103,18 @@ class RegisterViewModel(private val userRepository: IUserRepository) : BaseViewM
                 state.value.confirmPasswordInputStatus is Resource.Success &&
                 state.value.confirmPasswordInputStatus is Resource.Success
             ) {
-                _state.update {
-                    it.copy(
-                        confirmPasswordInputStatus = Resource.Success("Registrasi berhasil"),
-                        passwordInputStatus = Resource.Success("Registrasi berhasil"),
-                        emailInputStatus = Resource.Success("Registrasi berhasil")
-                    )
+                val user = UserEntity(
+                    email = state.value.emailInput,
+                    password = state.value.passwordInput,
+                    username = state.value.usernameInput
+                )
+                userRepository.register(user).collectLatest { result ->
+                    _state.update { state ->
+                        state.copy(
+                            registerResult = result
+                        )
+                    }
                 }
-
-                val user = UserEntity(email = state.value.emailInput, password = state.value.passwordInput)
-                userRepository.register(user)
             }
         }
     }
@@ -112,8 +130,11 @@ data class RegisterUiState(
     val confirmPasswordInputStatus: Resource<String>? = Resource.Idle(),
     val passwordInputStatus: Resource<String>? = Resource.Idle(),
     val emailInputStatus: Resource<String>? = Resource.Idle(),
+    val usernameInputStatus: Resource<String>? = Resource.Idle(),
+    val registerResult: Resource<Unit> = Resource.Idle(),
     val emailInput: String = "",
     val passwordInput: String = "",
+    val usernameInput: String = "",
     val confirmPasswordInput: String = "",
     val passwordHidden: Boolean = true,
     val confirmPasswordHidden: Boolean = true
@@ -124,6 +145,7 @@ sealed class RegisterUiAction {
     data class UpdateEmail(val email: String) : RegisterUiAction()
     data class UpdatePassword(val password: String) : RegisterUiAction()
     data class UpdateConfirmPassword(val confirmPassword: String) : RegisterUiAction()
+    data class UpdateUsername(val username: String) : RegisterUiAction()
     data object ShowPassword : RegisterUiAction()
     data object HidePassword : RegisterUiAction()
     data object ShowConfirmPassword : RegisterUiAction()

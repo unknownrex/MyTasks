@@ -1,5 +1,6 @@
 package com.rexample.mytasks.ui.register
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Card
@@ -25,9 +27,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -107,6 +111,15 @@ fun RegisterForm(
     val state = viewModel.state.collectAsState()
     val action = { action: RegisterUiAction -> viewModel.doAction(action)}
 
+    val context = LocalContext.current
+
+    LaunchedEffect(state.value.registerResult) {
+        if (state.value.registerResult is Resource.Success) {
+            Toast.makeText(context, "Registrasi Berhasil", Toast.LENGTH_SHORT).show()
+            navigateLogin()
+        }
+    }
+
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         shape = RoundedCornerShape(8.dp)
@@ -128,6 +141,34 @@ fun RegisterForm(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                AppTextField(
+                    value = state.value.usernameInput,
+                    onValueChange = {
+                        action(
+                            RegisterUiAction.UpdateUsername(it)
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = {
+                        Text(text = stringResource(R.string.name))
+                    },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Filled.Person,
+                            contentDescription = null
+                        )
+                    },
+                    isError = state.value.usernameInputStatus is Resource.Error,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    supportingText = {
+                        if(state.value.usernameInputStatus is Resource.Error) Text(
+                            text = state.value.usernameInputStatus?.message ?: "Nama tidak valid",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 14.sp
+                        )
+                    }
+                )
+
                 AppTextField(
                     value = state.value.emailInput,
                     onValueChange = {
@@ -250,8 +291,13 @@ fun RegisterForm(
                 text = stringResource(id = R.string.register),
                 modifier = Modifier.fillMaxWidth(),
                 enabled = state.value.emailInput != "" &&
+                        state.value.usernameInput != "" &&
                         state.value.passwordInput != "" &&
-                        state.value.confirmPasswordInput != "",
+                        state.value.confirmPasswordInput != "" &&
+                        state.value.emailInputStatus is Resource.Success &&
+                        state.value.passwordInputStatus is Resource.Success &&
+                        state.value.passwordInputStatus is Resource.Success &&
+                        state.value.confirmPasswordInputStatus is Resource.Success,
                 onClick = {
                     action(RegisterUiAction.RegisterUser)
                     navigateLogin()
