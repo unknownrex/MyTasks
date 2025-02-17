@@ -21,5 +21,5 @@ import androidx.room.PrimaryKey
 data class CategoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "user_id") val userId: Int
+    @ColumnInfo(name = "user_id") val userId: Int?
 )
