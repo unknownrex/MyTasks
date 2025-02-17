@@ -42,14 +42,22 @@ fun MainContent(
         index = 0,
         title = "Home",
         icon = Icons.Filled.Home,
-        navigate = { navController.navigate(HomeViewRoute) }
+        navigate = { navController.navigate(HomeViewRoute) {
+            popUpTo(navController.graph.id) {
+                inclusive = true
+            }
+        } }
     )
 
     val profileTab = TabBarItem(
         index = 1,
         title = "Profile",
         icon = Icons.Filled.Person,
-        navigate = { navController.navigate(ProfileRoute) }
+        navigate = { navController.navigate(ProfileRoute) {
+            popUpTo(navController.graph.id) {
+                inclusive = true
+            }
+        } }
     )
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
