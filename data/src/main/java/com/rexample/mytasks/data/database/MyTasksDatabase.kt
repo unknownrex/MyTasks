@@ -11,7 +11,8 @@ import com.rexample.mytasks.data.entity.CategoryEntity
 import com.rexample.mytasks.data.entity.TaskEntity
 import com.rexample.mytasks.data.entity.UserEntity
 
-@Database(entities = [UserEntity::class, CategoryEntity::class, TaskEntity::class], version = 1, exportSchema = false)
+@Database(entities = [UserEntity::class,CategoryEntity::class, TaskEntity::class], version = 4, exportSchema = true)
+
 abstract class MyTasksDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun categoryDao(): CategoryDao
