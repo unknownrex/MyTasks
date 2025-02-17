@@ -16,9 +16,9 @@ class AppViewModel(
         when(action){
             is AppUiAction.CheckSession -> {
                 viewModelScope.launch {
-                    authRepository.checkSession().collectLatest{
+                    authRepository.checkSession().collectLatest{ isValid ->
                         _state.update { state ->
-                            state.copy(isSessionValid = it)
+                            state.copy(isSessionValid = isValid)
                         }
                     }
                 }
