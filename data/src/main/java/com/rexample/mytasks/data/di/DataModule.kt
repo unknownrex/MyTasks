@@ -34,7 +34,7 @@ val dataModule = module {
             androidContext(),
             MyTasksDatabase::class.java,
             "mytasks_database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     single(dataStorePreferenceAuth) { provideAuthDataStore(androidContext()) }
