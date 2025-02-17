@@ -1,4 +1,4 @@
-package com.rexample.mytasks.ui
+package com.rexample.mytasks.home
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

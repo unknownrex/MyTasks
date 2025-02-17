@@ -1,4 +1,4 @@
-package com.rexample.mytasks.ui
+package com.rexample.mytasks.home
 
 import org.junit.Test
 
