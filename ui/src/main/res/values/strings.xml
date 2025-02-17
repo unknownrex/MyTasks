@@ -12,4 +12,24 @@
     <string name="dont_have_account">Belum punya akun?</string>
     <string name="already_have_account">Sudah punya akun?</string>
     <string name="email_or_password_wrong">Email atau password salah</string>
+    <string name="all">Semua</string>
+    <string name="back">Kembali</string>
+    <string name="new_task">Tugas Baru</string>
+    <string name="task_name">Nama tugas</string>
+    <string name="category">Kategori</string>
+    <string name="choose_category">Pilih Kategori</string>
+    <string name="add_task">Tambah Tugas</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="choose_time">Pilih Waktu</string>
+    <string name="choose_date">Pilih Tanggal</string>
+    <string name="something_wrong">Terjadi Kesalahan</string>
+    <string name="unknown_error">Error tidak diketahui</string>
+    <string name="search">cari</string>
+    <string name="manage_category">Kelola Kategori</string>
+    <string name="edit_category">Edit Kategori</string>
+    <string name="delete_category">Hapus Kategori</string>
+    <string name="add_category">Tambah Kategori</string>
+    <string name="name">Nama</string>
+    <string name="click_plus_to_add_task">Klik tombol \'+\' untuk mulai menambahkan tugas baru</string>
+    <string name="click_plus_to_add_category">Klik tombol \'+\' untuk mulai menambahkan kategori baru</string>
 </resources>
