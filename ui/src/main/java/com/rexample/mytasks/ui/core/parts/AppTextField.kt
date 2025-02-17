@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rexample.mytasks.ui.core.theme.MyTasksTheme
+import com.rexample.mytasks.ui.core.theme.black
 
 @Composable
 fun AppTextField(
@@ -51,6 +52,12 @@ fun AppTextField(
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = TextFieldDefaults.shape,
+    colors: TextFieldColors = TextFieldDefaults.colors(
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        errorContainerColor = Color.Transparent,
+        focusedSuffixColor = Color.Transparent,
+    )
 ) {
     TextField(
         value = value,
@@ -75,11 +82,7 @@ fun AppTextField(
         minLines = minLines,
         interactionSource = interactionSource,
         shape = shape,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            errorContainerColor = Color.Transparent
-        )
+        colors = colors
 
     )
 }
