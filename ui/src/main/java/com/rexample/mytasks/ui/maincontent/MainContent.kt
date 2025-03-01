@@ -5,8 +5,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -28,12 +28,10 @@ import com.rexample.mytasks.ui.home.HomeScreen
 import com.rexample.mytasks.ui.maincontent.tabbar.TabBarItem
 import com.rexample.mytasks.ui.maincontent.tabbar.TabBarView
 import com.rexample.mytasks.ui.managecategory.ManageCategoryScreen
-import com.rexample.mytasks.ui.profile.ProfileScreen
 
 
 @Composable
 fun MainContent(
-    navigateLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -49,11 +47,11 @@ fun MainContent(
         } }
     )
 
-    val profileTab = TabBarItem(
+    val categoryTab = TabBarItem(
         index = 1,
-        title = "Profile",
-        icon = Icons.Filled.Person,
-        navigate = { navController.navigate(ProfileRoute) {
+        title = "Categories",
+        icon = Icons.Filled.Category,
+        navigate = { navController.navigate(ManageCategoryRoute) {
             popUpTo(navController.graph.id) {
                 inclusive = true
             }
@@ -65,7 +63,7 @@ fun MainContent(
     val showBottomBar by remember {
         derivedStateOf {
             currentBackStackEntry?.destination?.hierarchy?.any {
-                it.hasRoute(HomeViewRoute::class) || it.hasRoute(ProfileRoute::class)
+                it.hasRoute(HomeViewRoute::class) || it.hasRoute(ManageCategoryRoute::class)
             } ?: false
         }
     }
@@ -84,7 +82,7 @@ fun MainContent(
                     selectedIndex = selectedTab,
                     selectIndex = {selectedTab = it},
                     fabItemNavigate = { navController.navigate(AddTaskRoute) },
-                    profileTab = profileTab,
+                    profileTab = categoryTab,
                     homeTab = homeTab
                 )
             }
@@ -101,9 +99,6 @@ fun MainContent(
                             )
                         )
                     },
-                    navigateCategory = {
-                        navController.navigate(ManageCategoryRoute)
-                    }
                 )
             }
 
@@ -118,15 +113,10 @@ fun MainContent(
                 EditTaskScreen(taskId = taskId, navigateBack = { navController.navigateUp() })
             }
 
-            composable<ProfileRoute> {
-                ProfileScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    navigateLogin = {navigateLogin()}
-                )
-            }
-
             composable<ManageCategoryRoute> {
-                ManageCategoryScreen(navigateBack = { navController.navigateUp() })
+                ManageCategoryScreen(
+                    modifier = Modifier.padding(innerPadding),
+                )
             }
         }
     }

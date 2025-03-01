@@ -147,6 +147,7 @@ fun TaskCard(
 }
 
 
+
 @Composable
 @Preview(showBackground = true)
 private fun CardPreview() {
@@ -164,7 +165,6 @@ private fun CardPreview() {
                     isDone = false,
                     isPinned = true,
                     categoryId = 1,
-                    userId = 1
                 )
             )
         }

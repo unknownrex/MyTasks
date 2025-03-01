@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.rexample.mytasks.data.entity.TaskEntity
-import com.rexample.mytasks.data.entity.UserEntity
 
 @Dao
 interface TaskDao {
@@ -20,28 +19,28 @@ interface TaskDao {
     @Delete
     suspend fun deleteTask(task: TaskEntity)
 
-    @Query("DELETE FROM tasks WHERE id IN (:taskIds) AND user_id = :userId")
-    suspend fun deleteTasks(taskIds: List<Int>, userId: Int)
+    @Query("DELETE FROM tasks WHERE id IN (:taskIds)")
+    suspend fun deleteTasks(taskIds: List<Int>)
 
-    @Query("SELECT * FROM tasks WHERE user_id = :userId ORDER BY is_pinned DESC, date ASC, time ASC")
-    suspend fun getAllTasks(userId: Int): List<TaskEntity>
+    @Query("SELECT * FROM tasks ORDER BY is_pinned DESC, date ASC, time ASC")
+    suspend fun getAllTasks(): List<TaskEntity>
 
-    @Query("SELECT * FROM tasks WHERE user_id = :userId AND name LIKE '%' || :query || '%'")
-    suspend fun searchTasks(userId: Int, query: String): List<TaskEntity>
+    @Query("SELECT * FROM tasks WHERE name LIKE '%' || :query || '%'")
+    suspend fun searchTasks(query: String): List<TaskEntity>
 
-    @Query("SELECT * FROM tasks WHERE user_id = :userId AND category_id = :categoryId")
-    suspend fun filterTasksByCategory(userId: Int, categoryId: Int): List<TaskEntity>
+    @Query("SELECT * FROM tasks WHERE category_id = :categoryId")
+    suspend fun filterTasksByCategory(categoryId: Int): List<TaskEntity>
 
-    @Query("UPDATE tasks SET is_pinned = :isPinned WHERE id = :taskId AND user_id = :userId")
-    suspend fun pinTask(userId: Int, taskId: Int, isPinned: Boolean)
+    @Query("UPDATE tasks SET is_pinned = :isPinned WHERE id = :taskId")
+    suspend fun pinTask(taskId: Int, isPinned: Boolean)
 
-    @Query("UPDATE tasks SET is_done = :isDone WHERE id = :taskId AND user_id = :userId")
-    suspend fun markAsDone(userId: Int, taskId: Int, isDone: Boolean)
+    @Query("UPDATE tasks SET is_done = :isDone WHERE id = :taskId")
+    suspend fun markAsDone(taskId: Int, isDone: Boolean)
 
-    @Query("UPDATE tasks SET is_done = 1 WHERE id IN (:taskIds) AND user_id = :userId")
-    suspend fun multipleMarkAsDone(userId: Int, taskIds: List<Int>)
+    @Query("UPDATE tasks SET is_done = 1 WHERE id IN (:taskIds)")
+    suspend fun multipleMarkAsDone(taskIds: List<Int>)
 
-    @Query("SELECT * FROM TASKS WHERE id = :taskId LIMIT 1")
+    @Query("SELECT * FROM tasks WHERE id = :taskId LIMIT 1")
     suspend fun getTaskById(taskId: Int): TaskEntity?
-
 }
+

@@ -24,19 +24,17 @@ class TaskReminderRepository(
 
         val taskDate = LocalDate.parse(task.date, dateFormatter)
         val taskTime = LocalTime.parse(task.time, timeFormatter)
-        val taskDateTime = LocalDateTime.of(taskDate, taskTime).minusMinutes(2)
+        val taskDateTime = LocalDateTime.of(taskDate, taskTime).minusMinutes(10)
 
         val delay = Duration.between(LocalDateTime.now(), taskDateTime).toMillis()
 
         if (delay > 0) {
-            Log.e("TaskReminder", "Waktu tugas telah berlalu, tidak menjadwalkan pengingat")
             val workRequest = OneTimeWorkRequestBuilder<TaskReminderWorker>()
                 .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                 .setInputData(
                     workDataOf(
                         "TASK_NAME" to task.name,
-                        "TASK_ID" to task.id,
-                        "USER_ID" to (task.userId ?: 0)
+                        "TASK_ID" to task.id
                     )
                 )
                 .build()

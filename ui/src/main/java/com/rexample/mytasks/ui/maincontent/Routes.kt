@@ -12,7 +12,4 @@ object AddTaskRoute
 data class EditTaskRoute(val taskId: Int)
 
 @Serializable
-object ProfileRoute
-
-@Serializable
 object ManageCategoryRoute

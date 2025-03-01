@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.AssignmentTurnedIn
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -21,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -80,19 +82,23 @@ fun TaskForm(
     var showTimePicker by remember { mutableStateOf(false) }
 
     val selectedCategory = categoryData.find { it.id.toString() == taskCategoryValue }
-    var selectedCategoryName by remember { mutableStateOf(selectedCategory?.name ?: "Pilih kategori") }
+    var selectedCategoryName by remember { mutableStateOf("Pilih kategori") }
 
     val (initialHour, initialMinute) = remember(taskTimeValue) {
         if (taskTimeValue.isNotEmpty()) {
             val parts = taskTimeValue.split(":")
             parts[0].toInt() to parts[1].toInt()
         } else {
-            val now = LocalDateTime.now()
+            val now = LocalDateTime.now().plusHours(1)
             now.hour to now.minute
         }
     }
     var selectedHour by remember(taskTimeValue) { mutableIntStateOf(initialHour) }
     var selectedMinute by remember(taskTimeValue) { mutableIntStateOf(initialMinute) }
+
+    LaunchedEffect(taskCategoryValue, categoryData) {
+        selectedCategoryName = selectedCategory?.name ?: "Pilih kategori"
+    }
 
     LaunchedEffect(Unit) {
         if (taskDateValue.isEmpty()) {
@@ -101,7 +107,7 @@ fun TaskForm(
         }
 
         if (taskTimeValue.isEmpty()) {
-            val now = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+            val now = LocalTime.now().plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"))
             onTimeValueChange(now)
         }
     }

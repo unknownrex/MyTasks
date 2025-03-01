@@ -37,14 +37,10 @@ class CategoryRepository(private val categoryDao: CategoryDao) : ICategoryReposi
         }
     }
 
-    override fun getAllCategories(userId: Int?): Flow<Resource<List<CategoryEntity>>> = flow {
-        if (userId == null) {
-            emit(Resource.Error("Sesi akun telah habis"))
-            return@flow
-        }
+    override fun getAllCategories(): Flow<Resource<List<CategoryEntity>>> = flow {
         try {
             emit(Resource.Loading())
-            val result = categoryDao.getAllCategories(userId)
+            val result = categoryDao.getAllCategories()
             emit(Resource.Success(result))
         } catch (e: Exception) {
             emit(Resource.Error("Gagal mengambil kategori: ${e.message}"))

@@ -25,7 +25,6 @@ import com.rexample.mytasks.ui.core.theme.secondary
 @Composable
 fun AppTopBar(
     onSearchClick: () -> Unit,
-    navigateCategory: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -46,12 +45,6 @@ fun AppTopBar(
                     tint = black
                 )
             }
-            IconButton(onClick = { navigateCategory() }) {
-                Icon(
-                    Icons.Filled.Category, stringResource(R.string.manage_category),
-                    tint = black
-                )
-            }
         }
     )
 }
@@ -60,6 +53,6 @@ fun AppTopBar(
 @Composable
 private fun TopBarPreview() {
     MyTasksTheme {
-        AppTopBar({},{})
+        AppTopBar({})
     }
 }

@@ -44,7 +44,7 @@ fun CustomToggleButton(
             .clickable { onCheckedChange(!isChecked) }
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val borderWidth = 1.dp.toPx() // Ketebalan border
+            val borderWidth = 1.dp.toPx()
             val radius = (size.minDimension / 2) - (borderWidth / 2)
 
             drawCircle(

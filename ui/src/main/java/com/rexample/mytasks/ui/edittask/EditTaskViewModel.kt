@@ -4,24 +4,19 @@ import androidx.lifecycle.viewModelScope
 import com.rexample.mytasks.data.entity.CategoryEntity
 import com.rexample.mytasks.data.entity.TaskEntity
 import com.rexample.mytasks.data.mechanism.Resource
-import com.rexample.mytasks.data.preference.AuthPreference
 import com.rexample.mytasks.data.repository.ICategoryRepository
 import com.rexample.mytasks.data.repository.ITaskRepository
 import com.rexample.mytasks.ui.core.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class EditTaskViewModel(
     val taskRepository: ITaskRepository,
-    val categoryRepository: ICategoryRepository,
-    val authPreference: AuthPreference
+    val categoryRepository: ICategoryRepository
 ) : BaseViewModel<EditTaskUiState, EditTaskUiAction>() {
     override val _state = MutableStateFlow(EditTaskUiState())
-
-    private val userId = authPreference.userId
 
     override fun doAction(action: EditTaskUiAction) {
         when (action) {
@@ -54,7 +49,6 @@ class EditTaskViewModel(
         if (currentData != null) {
             _state.update {
                 it.copy(
-
                     taskNameInput = currentData.name,
                     taskDateInput = currentData.date,
                     taskTimeInput = currentData.time,
@@ -89,7 +83,6 @@ class EditTaskViewModel(
     private fun loadCategories() {
         viewModelScope.launch {
             categoryRepository.getAllCategories(
-                userId = userId.first()
             ).collectLatest { categories ->
                 _state.update { state ->
                     state.copy(

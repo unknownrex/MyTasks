@@ -3,18 +3,15 @@ package com.rexample.mytasks.ui.managecategory
 import androidx.lifecycle.viewModelScope
 import com.rexample.mytasks.data.entity.CategoryEntity
 import com.rexample.mytasks.data.mechanism.Resource
-import com.rexample.mytasks.data.preference.AuthPreference
 import com.rexample.mytasks.data.repository.ICategoryRepository
 import com.rexample.mytasks.ui.core.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ManageCategoryViewModel (
-    val categoryRepository: ICategoryRepository,
-    val authPreference: AuthPreference
+    val categoryRepository: ICategoryRepository
 ): BaseViewModel<ManageCategoryUiState, ManageCategoryUiAction>() {
     override val _state = MutableStateFlow(ManageCategoryUiState())
 
@@ -39,10 +36,7 @@ class ManageCategoryViewModel (
 
     private fun loadCategories() {
         viewModelScope.launch {
-            val userId = authPreference.userId.first()
-            categoryRepository.getAllCategories(
-                userId = userId
-            ).collectLatest { data ->
+            categoryRepository.getAllCategories().collectLatest { data ->
                 _state.update {
                     it.copy(
                         categoryData = data
@@ -54,10 +48,8 @@ class ManageCategoryViewModel (
 
     private fun addCategory() {
         viewModelScope.launch {
-            val userId = authPreference.userId.first()
             val newCategory = CategoryEntity(
                 name = state.value.categoryNameInput,
-                userId = userId
             )
 
             categoryRepository.insertCategory(newCategory).collectLatest { result ->
@@ -76,11 +68,9 @@ class ManageCategoryViewModel (
 
     private fun editCategory() {
         viewModelScope.launch {
-            val userId = authPreference.userId.first()
             val currentCategory = state.value.selectedCategory
             val newCategory = currentCategory?.copy(
                 name = state.value.editCategoryNameInput,
-                userId = userId
             )
 
             if (newCategory != null) {

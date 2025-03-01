@@ -6,10 +6,4 @@ import kotlinx.serialization.Serializable
 object SplashScreenRoute
 
 @Serializable
-object RegisterRoute
-
-@Serializable
-object LoginRoute
-
-@Serializable
 object HomeScreenRoute

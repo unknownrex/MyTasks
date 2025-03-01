@@ -17,13 +17,13 @@ import com.rexample.mytasks.data.entity.CategoryEntity
 import com.rexample.mytasks.data.entity.TaskEntity
 import com.rexample.mytasks.ui.core.theme.MyTasksTheme
 import com.rexample.mytasks.ui.home.categoryDummies
-import com.rexample.mytasks.ui.home.taskDummies
+
 
 @Composable
 fun TaskList(
     tasks: List<TaskEntity>,
     categories: List<CategoryEntity>,
-    onEditTask: (TaskEntity) -> Unit, // Tambahkan navigasi ke halaman edit
+    onEditTask: (TaskEntity) -> Unit,
     onLongPress: (Boolean) -> Unit,
     onPinClick: () -> Unit,
     onDoneClick: () -> Unit
@@ -70,6 +70,7 @@ fun TaskList(
     }
 }
 
+/*
 @Composable
 @Preview(showBackground = true)
 private fun TaskListPreview() {
@@ -87,4 +88,4 @@ private fun TaskListPreview() {
             )
         }
     }
-}
+}*/

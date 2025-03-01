@@ -8,18 +8,8 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "categories",
-    foreignKeys = [
-        ForeignKey(
-            entity = UserEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["user_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index(value = ["user_id"])]
 )
 data class CategoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "user_id") val userId: Int?
 )

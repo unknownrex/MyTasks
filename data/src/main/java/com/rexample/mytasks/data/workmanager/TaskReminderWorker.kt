@@ -17,13 +17,12 @@ class TaskReminderWorker(
     override fun doWork(): Result {
         val taskName = inputData.getString("TASK_NAME") ?: "Tugas"
         val taskId = inputData.getInt("TASK_ID", 0)
-        val userId = inputData.getInt("USER_ID", 0)
 
-        showNotification(taskName, taskId, userId)
+        showNotification(taskName, taskId)
         return Result.success()
     }
 
-    private fun showNotification(taskName: String, taskId: Int, userId: Int) {
+    private fun showNotification(taskName: String, taskId: Int) {
         val channelId = "task_reminder_channel"
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -41,9 +40,8 @@ class TaskReminderWorker(
             .setContentTitle("Pengingat Tugas")
             .setContentText("Tugas \"$taskName\" akan berakhir!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setVibrate(LongArray(0))
             .setAutoCancel(true)
 
-        notificationManager.notify(taskId + userId * 1000, builder.build())
+        notificationManager.notify(taskId * 1000, builder.build())
     }
 }

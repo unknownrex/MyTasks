@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,6 +57,7 @@ import com.rexample.mytasks.ui.core.dialog.ConfirmDeleteDialog
 import com.rexample.mytasks.ui.core.parts.AppTextField
 import com.rexample.mytasks.ui.core.theme.MyTasksTheme
 import com.rexample.mytasks.ui.core.theme.black
+import com.rexample.mytasks.ui.core.theme.primary
 import com.rexample.mytasks.ui.core.theme.secondary
 import com.rexample.mytasks.ui.core.theme.white
 import com.rexample.mytasks.ui.home.categoryDummies
@@ -63,7 +65,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ManageCategoryScreen(
-    navigateBack: () -> Unit,
     viewModel: ManageCategoryViewModel = koinViewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -77,7 +78,7 @@ fun ManageCategoryScreen(
     }
 
     Scaffold(
-        topBar = { ManageCategoryTopBar(navigateBack)},
+        topBar = { ManageCategoryTopBar()},
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { action(ManageCategoryUiAction.ShowAddDialog) },
@@ -227,29 +228,19 @@ fun CategoryFormDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ManageCategoryTopBar(
-    navigateBack: () -> Unit
-) {
+fun ManageCategoryTopBar() {
     TopAppBar(
         title = {
             Text(
-                text = stringResource(R.string.manage_category),
-                fontWeight = FontWeight.Medium,
-                fontSize = 18.sp,
-                color = black
+                text = "MyTasks",
+                fontWeight = FontWeight.Bold,
+                color = primary,
+                fontSize = 24.sp
             )
         },
         colors = TopAppBarDefaults.topAppBarColors().copy(
             containerColor = secondary
-        ),
-        navigationIcon = {
-            IconButton(onClick = { navigateBack() }) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back),
-                    tint = black
-                )
-            }
-        }
+        )
     )
 }
 
@@ -257,6 +248,6 @@ fun ManageCategoryTopBar(
 @Preview(showBackground = true)
 fun ManageCategoryPreview() {
     MyTasksTheme {
-        ManageCategoryScreen(navigateBack = { /*TODO*/ })
+        ManageCategoryScreen()
     }
 }

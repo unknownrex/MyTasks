@@ -6,15 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.rexample.mytasks.data.dao.CategoryDao
 import com.rexample.mytasks.data.dao.TaskDao
-import com.rexample.mytasks.data.dao.UserDao
 import com.rexample.mytasks.data.entity.CategoryEntity
 import com.rexample.mytasks.data.entity.TaskEntity
-import com.rexample.mytasks.data.entity.UserEntity
 
-@Database(entities = [UserEntity::class,CategoryEntity::class, TaskEntity::class], version = 4, exportSchema = true)
+@Database(entities = [CategoryEntity::class, TaskEntity::class], version = 5, exportSchema = true)
 
 abstract class MyTasksDatabase : RoomDatabase() {
-    abstract fun userDao(): UserDao
     abstract fun categoryDao(): CategoryDao
     abstract fun taskDao(): TaskDao
 }

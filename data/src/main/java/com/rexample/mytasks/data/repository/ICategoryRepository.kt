@@ -8,5 +8,5 @@ interface ICategoryRepository {
     fun insertCategory(category: CategoryEntity): Flow<Resource<Unit>>
     fun updateCategory(category: CategoryEntity): Flow<Resource<Unit>>
     fun deleteCategory(category: CategoryEntity): Flow<Resource<Unit>>
-    fun getAllCategories(userId: Int?): Flow<Resource<List<CategoryEntity>>>
+    fun getAllCategories(): Flow<Resource<List<CategoryEntity>>>
 }

@@ -1,11 +1,9 @@
 package com.rexample.mytasks.ui.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.rexample.mytasks.data.entity.CategoryEntity
 import com.rexample.mytasks.data.entity.TaskEntity
 import com.rexample.mytasks.data.mechanism.Resource
-import com.rexample.mytasks.data.preference.AuthPreference
 import com.rexample.mytasks.data.repository.ICategoryRepository
 import com.rexample.mytasks.data.repository.ITaskRepository
 import com.rexample.mytasks.ui.core.BaseViewModel
@@ -13,14 +11,12 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
     val taskRepository: ITaskRepository,
-    val categoryRepository: ICategoryRepository,
-    val authPreference: AuthPreference
+    val categoryRepository: ICategoryRepository
 ) : BaseViewModel<HomeUiState, HomeUiAction>() {
     override val _state = MutableStateFlow(HomeUiState())
 
@@ -90,7 +86,7 @@ class HomeViewModel(
 
     private fun getAllTasks() {
         viewModelScope.launch {
-            taskRepository.getAllTasks(authPreference.userId.first()).collectLatest { data ->
+            taskRepository.getAllTasks().collectLatest { data ->
                 _state.update { state ->
                     state.copy(
                         taskData = data
@@ -102,7 +98,7 @@ class HomeViewModel(
 
     private fun getAllCategories() {
         viewModelScope.launch {
-            categoryRepository.getAllCategories(authPreference.userId.first())
+            categoryRepository.getAllCategories()
                 .collectLatest { data ->
                     _state.update { state ->
                         state.copy(
@@ -116,10 +112,7 @@ class HomeViewModel(
     private fun getFilteredTasks(categoryId: Int) {
         viewModelScope.launch {
 
-            taskRepository.filterTasksByCategory(
-                authPreference.userId.first(),
-                categoryId
-            ).collectLatest { data ->
+            taskRepository.filterTasksByCategory(categoryId).collectLatest { data ->
                 _state.update { state ->
                     state.copy(
                         taskData = data
@@ -133,10 +126,7 @@ class HomeViewModel(
     @OptIn(FlowPreview::class)
     private fun searchTasks() {
         viewModelScope.launch {
-            taskRepository.searchTasks(
-                authPreference.userId.first(),
-                state.value.searchInput
-            )
+            taskRepository.searchTasks(state.value.searchInput)
                 .debounce(300)
                 .collectLatest { data ->
                     _state.update { state ->
@@ -153,7 +143,7 @@ class HomeViewModel(
         val newPin = !(currentTask?.isPinned ?: false)
 
         viewModelScope.launch {
-            taskRepository.pinTask(authPreference.userId.first(), taskId, newPin).collectLatest {
+            taskRepository.pinTask(taskId, newPin).collectLatest {
                 _state.update { state ->
                     state.copy(
                         actionResult = it
@@ -170,7 +160,7 @@ class HomeViewModel(
         val newDoneTask = !(currentTask?.isDone ?: false)
 
         viewModelScope.launch {
-            taskRepository.markAsDone(authPreference.userId.first(), taskId, newDoneTask)
+            taskRepository.markAsDone(taskId, newDoneTask)
                 .collectLatest {
                     _state.update { state ->
                         state.copy(
@@ -184,11 +174,10 @@ class HomeViewModel(
 
     private fun markAsDoneSelectedTasks() {
         viewModelScope.launch {
-            val userId = authPreference.userId.first()
             val selectedTasks = state.value.multipleSelectedTasks
 
             if (selectedTasks.isNotEmpty()) {
-                taskRepository.multipleMarkAsDone(userId, selectedTasks).collectLatest { result ->
+                taskRepository.multipleMarkAsDone(selectedTasks).collectLatest { result ->
                     _state.update {
                         it.copy(
                             actionResult = result,
@@ -209,14 +198,13 @@ class HomeViewModel(
         }
     }
 
-    fun deleteSelectedTasks() {
+    private fun deleteSelectedTasks() {
         viewModelScope.launch {
-            val userId = authPreference.userId.first()
             val selectedTasks = state.value.multipleSelectedTasks
 
 
             if (selectedTasks.isNotEmpty()) {
-                taskRepository.deleteTasks(selectedTasks, userId).collectLatest { result ->
+                taskRepository.deleteTasks(selectedTasks).collectLatest { result ->
                     _state.update {
                         it.copy(
                             actionResult = result,
@@ -270,7 +258,7 @@ sealed class HomeUiAction {
     data class SelectCategoryFilter(val categoryId: Int?)  : HomeUiAction()
 }
 
-val taskDummies = listOf(
+/*val taskDummies = listOf(
     TaskEntity(
         id = 0,
         name = "Mempelajari Kotlin1",
@@ -321,27 +309,23 @@ val taskDummies = listOf(
         categoryId = 1,
         userId = 1
     )
-)
+)*/
 
 val categoryDummies = listOf(
     CategoryEntity(
         id = 0,
         name = "Belajar",
-        userId = 1
     ),
     CategoryEntity(
         id = 1,
         name = "Keinginan",
-        userId = 1
     ),
     CategoryEntity(
         id = 2,
         name = "Kerja",
-        userId = 1
     ),
     CategoryEntity(
         id = 3,
         name = "Sekolah",
-        userId = 1
     )
 )
